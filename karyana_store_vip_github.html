@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karyana Store | VIP Desktop Management</title>
+<style>
+:root{--navy:#172554;--blue:#1d4ed8;--bg:#f1f5f9;--card:#fff;--text:#172033;--muted:#64748b;--line:#e2e8f0;--green:#15803d;--red:#b91c1c}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 "Segoe UI",Arial,sans-serif;min-width:1000px}
+.app{display:flex;min-height:100vh}.sidebar{width:245px;background:linear-gradient(180deg,#172554,#1e3a8a);color:#fff;padding:24px 16px;flex-shrink:0}
+.brand{padding:4px 12px 25px;border-bottom:1px solid #ffffff25;margin-bottom:18px}.brand h2{font-size:20px;margin:0 0 5px}.brand small{color:#bfdbfe}
+.nav button{width:100%;border:0;background:transparent;color:#dbeafe;text-align:left;padding:12px 14px;margin:3px 0;border-radius:9px;font-size:14px;cursor:pointer}
+.nav button:hover,.nav button.active{background:#ffffff20;color:white}.main{flex:1;padding:26px 30px;max-width:calc(100% - 245px)}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}.top h1{font-size:25px;margin:0}.date{color:var(--muted)}
+.page{display:none}.page.active{display:block}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px}
+.card,.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;box-shadow:0 2px 8px #0f172a08}
+.metric small{color:var(--muted);display:block}.metric strong{font-size:25px;display:block;margin-top:8px}.metric .hint{font-size:12px;color:var(--muted);margin-top:3px}
+.panel{margin-bottom:18px}.panel h3{margin:0 0 16px;font-size:17px}.toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:14px}
+input,select,textarea{border:1px solid #cbd5e1;border-radius:7px;padding:10px 11px;font:inherit;background:white;color:var(--text)}
+input:focus,select:focus,textarea:focus{outline:2px solid #bfdbfe;border-color:var(--blue)}
+button{font:inherit}.btn{border:0;border-radius:7px;padding:10px 15px;background:var(--blue);color:white;cursor:pointer;font-weight:600}.btn:hover{filter:brightness(.94)}.btn.secondary{background:#e2e8f0;color:#1e293b}.btn.danger{background:#b91c1c}.btn.success{background:#15803d}.btn.small{padding:6px 10px;font-size:12px}
+.formgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}.field input,.field select,.field textarea{width:100%}
+table{width:100%;border-collapse:collapse;background:white}th,td{padding:11px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}th{font-size:12px;color:#475569;background:#f8fafc}td{font-size:13px}.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:9px}
+.empty{text-align:center;color:var(--muted);padding:28px}.muted{color:var(--muted)}.right{text-align:right}.actions{display:flex;gap:6px}.two{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
+.notice{background:#eff6ff;border:1px solid #bfdbfe;padding:12px;border-radius:8px;color:#1e40af;margin-bottom:16px}
+.status{padding:4px 8px;border-radius:20px;background:#dcfce7;color:#166534;font-size:11px}.negative{color:var(--red)}.positive{color:var(--green)}
+hr{border:0;border-top:1px solid var(--line);margin:18px 0}
+@media print{.sidebar,.top,.no-print{display:none!important}.main{padding:0;max-width:none}.page{display:none!important}#page-sales{display:block!important}.panel{box-shadow:none;border:0}}
+
+/* VIP desktop styling */
+:root{--navy:#101b3c;--blue:#3157d5;--bg:#f4f6fb;--card:#fff;--text:#17213a;--muted:#75809a;--line:#e8ecf4;--green:#16845b;--gold:#c49a42;--red:#c2414b}
+body{background:radial-gradient(circle at 85% 0%,#e7edff 0,transparent 27%),#f4f6fb;color:#17213a;font-family:Inter,"Segoe UI",Arial,sans-serif}
+.sidebar{width:258px;padding:27px 17px;background:linear-gradient(165deg,#0d1734,#172b5c 56%,#203e7b);box-shadow:8px 0 30px #15244b16}
+.brand{padding:8px 13px 25px;margin-bottom:23px;border-bottom:1px solid #ffffff20}
+.brand:before{content:"";display:block;width:42px;height:4px;border-radius:9px;background:linear-gradient(90deg,#e4bd68,#fff0c3);margin-bottom:15px}
+.brand h2{font-size:19px;letter-spacing:.35px;font-weight:800;color:#fff}
+.brand small{color:#aebfe8;font-size:11px;letter-spacing:1.6px;text-transform:uppercase}
+.nav button{padding:13px 15px;border-radius:10px;margin:5px 0;color:#c4d0ed;font-weight:600;transition:.18s;border:1px solid transparent}
+.nav button:hover{background:#ffffff12;color:#fff;transform:translateX(2px)}
+.nav button.active{background:linear-gradient(100deg,#355bd2,#496fe7);color:#fff;box-shadow:0 8px 18px #07163e55;border-color:#8ca5ff55}
+.main{padding:31px 34px;max-width:calc(100% - 258px)}
+.top{padding:0 2px 20px;margin-bottom:22px;border-bottom:1px solid #e3e8f2}
+.top h1{font-size:27px;font-weight:800;letter-spacing:-.6px;color:#152347}
+.date{background:#fff;border:1px solid #e8ecf4;padding:8px 13px;border-radius:9px;color:#65718b;font-size:12px;box-shadow:0 3px 10px #1a2d5510}
+.cards{gap:17px;margin-bottom:20px}
+.card,.panel{border:1px solid #e8ecf4;border-radius:15px;box-shadow:0 7px 24px #172b5508;background:rgba(255,255,255,.97)}
+.card{position:relative;overflow:hidden}
+.metric{padding:20px 21px}
+.metric:after{content:"";position:absolute;right:-22px;top:-28px;width:92px;height:92px;border-radius:50%;background:linear-gradient(135deg,#edf1ff,#f8f9ff)}
+.metric small{font-size:12px;font-weight:700;letter-spacing:.25px;color:#7b86a0;position:relative;z-index:1}
+.metric strong{font-size:26px;font-weight:800;letter-spacing:-.8px;color:#17264c;position:relative;z-index:1}
+.metric .hint{font-size:11px;color:#9aa3b7;position:relative;z-index:1}
+.panel{padding:21px;margin-bottom:18px}
+.panel h3{font-size:16px;font-weight:800;color:#1a2a50;letter-spacing:-.15px}
+input,select,textarea{border:1px solid #dce3ef;border-radius:8px;padding:11px 12px;background:#fbfcff;transition:.15s}
+input:hover,select:hover{border-color:#aebde0}
+input:focus,select:focus,textarea:focus{outline:3px solid #dce6ff;border-color:#5275df;background:#fff}
+.field label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.55px;color:#77839c;margin-bottom:7px}
+.btn{border-radius:8px;padding:10px 16px;font-weight:700;box-shadow:0 4px 10px #2446ad18;transition:.15s}
+.btn:hover{filter:brightness(1.04);transform:translateY(-1px);box-shadow:0 7px 14px #2446ad22}
+.btn.secondary{box-shadow:none;border:1px solid #e0e6f0;background:#f4f6fb}
+.btn.success{background:linear-gradient(100deg,#13865b,#20a477)}
+table{border-collapse:separate;border-spacing:0}
+th{background:#f6f8fc;color:#73809a;font-size:10px;text-transform:uppercase;letter-spacing:.65px;padding:13px 12px}
+td{padding:13px 12px;color:#35415d;border-bottom:1px solid #edf0f6}
+tbody tr:hover td{background:#fafbff}
+.tablewrap{border:1px solid #e8ecf4;border-radius:10px}
+.empty{color:#9aa4b8;padding:30px}
+.notice{background:linear-gradient(100deg,#edf3ff,#f8faff);border:1px solid #dce6ff;border-radius:10px;color:#3b579c}
+#lowStock p{padding:10px 11px;margin:7px 0;background:#fff8e8;border:1px solid #f5e5bd;border-radius:8px;color:#8b6721}
+#page-settings .panel:last-child{border-left:4px solid #c49a42}
+
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+ <div class="brand"><h2 id="brandName">Karyana Store</h2><small>Management Software</small></div>
+ <nav class="nav">
+  <button class="active" data-page="dashboard">▦ &nbsp; Dashboard</button>
+  <button data-page="products">▣ &nbsp; Products / Stock</button>
+  <button data-page="sales">▤ &nbsp; Sales & Billing</button>
+  <button data-page="purchases">＋ &nbsp; New Purchasing</button>
+  <button data-page="customers">♙ &nbsp; Customers</button>
+  <button data-page="ledger">⇄ &nbsp; Customer Ledger</button>
+  <button data-page="reports">▥ &nbsp; Reports</button>
+  <button data-page="settings">⚙ &nbsp; Settings</button>
+ </nav>
+ <div style="position:absolute;bottom:18px;color:#bfdbfe;font-size:11px;padding:0 12px">Desktop Edition · Local Data</div>
+</aside>
+<main class="main">
+ <div class="top"><div><h1 id="pageTitle">Dashboard</h1><div style="font-size:11px;color:#8994aa;margin-top:4px;letter-spacing:1.1px;text-transform:uppercase">VIP Store Management Suite</div></div><div class="date" id="today"></div></div>
+
+ <section class="page active" id="page-dashboard">
+  <div class="cards">
+   <div class="card metric"><small>Today's Sales</small><strong id="dSales">Rs 0</strong><div class="hint">Total billed today</div></div>
+   <div class="card metric"><small>Total Products</small><strong id="dProducts">0</strong><div class="hint">Items in inventory</div></div>
+   <div class="card metric"><small>Stock Value</small><strong id="dStock">Rs 0</strong><div class="hint">At purchase price</div></div>
+   <div class="card metric"><small>Customer Due</small><strong id="dDue">Rs 0</strong><div class="hint">Outstanding balance</div></div>
+  </div>
+  <div class="two">
+   <div class="panel"><h3>Recent Sales</h3><div class="tablewrap"><table><thead><tr><th>Invoice</th><th>Customer</th><th>Date</th><th>Total</th></tr></thead><tbody id="recentSales"></tbody></table></div></div>
+   <div class="panel"><h3>Low Stock Alert</h3><div id="lowStock" class="muted">No low stock items.</div></div>
+  </div>
+  <div class="notice">Tip: Add your shop name and details in Settings. Your records are saved in this computer's browser.</div>
+ </section>
+
+ <section class="page" id="page-products">
+  <div class="panel">
+   <h3>Add / Update Product</h3>
+   <form id="productForm" class="formgrid">
+    <div class="field"><label>Product Name *</label><input id="pName" required placeholder="e.g. Sugar"></div>
+    <div class="field"><label>Category</label><input id="pCategory" placeholder="Grocery"></div>
+    <div class="field"><label>Unit</label><select id="pUnit"><option>Piece</option><option>Kg</option><option>Gram</option><option>Liter</option><option>Packet</option><option>Dozen</option><option>Bag</option><option>Carton</option></select></div>
+    <div class="field"><label>Purchase Price (Rs)</label><input id="pBuy" type="number" min="0" step=".01" value="0"></div>
+    <div class="field"><label>Sale Price (Rs) *</label><input id="pSell" type="number" min="0" step=".01" required></div>
+    <div class="field"><label>Opening / Current Stock</label><input id="pQty" type="number" min="0" step=".01" value="0"></div>
+    <div><button class="btn" type="submit" id="productSubmit">Save Product</button> <button class="btn secondary" type="reset" id="productCancel">Clear</button></div>
+   </form>
+  </div>
+  <div class="panel"><div class="toolbar"><h3 style="margin:0">Inventory List</h3><input id="productSearch" placeholder="Search product..." style="width:260px"></div>
+   <div class="tablewrap"><table><thead><tr><th>Product</th><th>Category</th><th>Unit</th><th>Buy Price</th><th>Sale Price</th><th>Stock</th><th>Stock Value</th><th>Action</th></tr></thead><tbody id="productsTable"></tbody></table></div>
+  </div>
+ </section>
+
+ <section class="page" id="page-sales">
+  <div class="panel no-print"><h3>Create Sale / Invoice</h3>
+   <div class="formgrid">
+    <div class="field"><label>Customer</label><select id="saleCustomer"><option value="">Walk-in Customer</option></select></div>
+    <div class="field"><label>Product</label><select id="saleProduct"></select></div>
+    <div class="field"><label>Quantity</label><input id="saleQty" type="number" min=".01" step=".01" value="1"></div>
+   </div>
+   <div style="margin-top:12px"><button class="btn" id="addSaleItem">Add Item to Bill</button></div>
+  </div>
+  <div class="panel">
+   <div class="toolbar"><h3 style="margin:0">Invoice <span id="invoiceNo"></span></h3><span id="invoiceDate" class="muted"></span></div>
+   <div class="tablewrap"><table><thead><tr><th>Item</th><th>Qty</th><th>Rate</th><th>Amount</th><th class="no-print">Action</th></tr></thead><tbody id="cartTable"></tbody></table></div>
+   <div style="display:flex;justify-content:flex-end;margin-top:16px"><div style="width:310px">
+    <div class="toolbar"><span>Subtotal</span><strong id="cartSubtotal">Rs 0</strong></div>
+    <div class="toolbar"><span>Discount (Rs)</span><input id="saleDiscount" type="number" min="0" value="0" style="width:120px"></div>
+    <div class="toolbar"><span><b>Grand Total</b></span><strong id="cartTotal">Rs 0</strong></div>
+    <div class="field no-print"><label>Paid Amount (Rs)</label><input id="salePaid" type="number" min="0" value="0"></div>
+    <div class="toolbar"><span>Balance / Due</span><strong id="cartDue">Rs 0</strong></div>
+   </div></div>
+   <div class="no-print" style="display:flex;gap:9px;justify-content:flex-end;margin-top:18px"><button class="btn secondary" id="clearCart">Clear Bill</button><button class="btn success" id="completeSale">Save Sale & Print</button></div>
+  </div>
+  <div class="panel"><h3>Saved Sales</h3><div class="tablewrap"><table><thead><tr><th>Invoice</th><th>Customer</th><th>Date</th><th>Total</th><th>Paid</th><th>Due</th></tr></thead><tbody id="salesTable"></tbody></table></div></div>
+ </section>
+
+ <section class="page" id="page-purchases">
+  <div class="panel"><h3>Record New Purchase</h3>
+   <form id="purchaseForm" class="formgrid">
+    <div class="field"><label>Product *</label><select id="purchaseProduct" required></select></div>
+    <div class="field"><label>Quantity *</label><input id="purchaseQty" type="number" min=".01" step=".01" required></div>
+    <div class="field"><label>Purchase Rate (Rs) *</label><input id="purchaseRate" type="number" min="0" step=".01" required></div>
+    <div class="field"><label>Supplier Name</label><input id="supplier" placeholder="Supplier / Wholesaler"></div>
+    <div class="field"><label>Purchase Date</label><input id="purchaseDate" type="date"></div>
+    <div style="align-self:end"><button class="btn" type="submit">Save Purchase</button></div>
+   </form>
+  </div>
+  <div class="panel"><h3>Purchase History</h3><div class="tablewrap"><table><thead><tr><th>Date</th><th>Product</th><th>Qty</th><th>Rate</th><th>Total</th><th>Supplier</th></tr></thead><tbody id="purchasesTable"></tbody></table></div></div>
+ </section>
+
+ <section class="page" id="page-customers">
+  <div class="panel"><h3>Add Customer</h3><form id="customerForm" class="formgrid">
+   <div class="field"><label>Customer Name *</label><input id="cName" required></div>
+   <div class="field"><label>Mobile</label><input id="cPhone"></div>
+   <div class="field"><label>Address</label><input id="cAddress"></div>
+   <div><button class="btn" type="submit">Save Customer</button></div>
+  </form></div>
+  <div class="panel"><h3>Customer List</h3><div class="tablewrap"><table><thead><tr><th>Name</th><th>Mobile</th><th>Address</th><th>Balance Due</th><th>Action</th></tr></thead><tbody id="customersTable"></tbody></table></div></div>
+ </section>
+
+ <section class="page" id="page-ledger">
+  <div class="panel"><h3>Customer Payment / Ledger Entry</h3><form id="paymentForm" class="formgrid">
+   <div class="field"><label>Customer *</label><select id="ledgerCustomer" required></select></div>
+   <div class="field"><label>Payment Received (Rs)</label><input id="paymentAmount" type="number" min=".01" step=".01" required></div>
+   <div class="field"><label>Note</label><input id="paymentNote" placeholder="Cash received"></div>
+   <div><button class="btn success" type="submit">Save Payment</button></div>
+  </form></div>
+  <div class="panel"><h3>Ledger Transactions</h3><div class="tablewrap"><table><thead><tr><th>Date</th><th>Customer</th><th>Type</th><th>Details</th><th>Debit</th><th>Credit</th></tr></thead><tbody id="ledgerTable"></tbody></table></div></div>
+ </section>
+
+ <section class="page" id="page-reports">
+  <div class="cards">
+   <div class="card metric"><small>Total Sales</small><strong id="rSales">Rs 0</strong></div>
+   <div class="card metric"><small>Total Purchases</small><strong id="rPurchases">Rs 0</strong></div>
+   <div class="card metric"><small>Estimated Gross Profit</small><strong id="rProfit">Rs 0</strong></div>
+   <div class="card metric"><small>Outstanding Due</small><strong id="rDue">Rs 0</strong></div>
+  </div>
+  <div class="panel"><h3>Data Backup</h3><p class="muted">Download a backup of your store records. Keep it safe so you can restore your data later.</p><button class="btn" id="exportData">Download Backup (JSON)</button> <label class="btn secondary" for="importFile" style="display:inline-block;cursor:pointer">Restore Backup</label><input id="importFile" type="file" accept=".json,application/json" style="display:none"></div>
+ </section>
+
+ <section class="page" id="page-settings">
+  <div class="panel"><h3>Store Settings</h3><form id="settingsForm" class="formgrid">
+   <div class="field"><label>Shop / Store Name</label><input id="sName" placeholder="My Karyana Store"></div>
+   <div class="field"><label>Owner Name</label><input id="sOwner"></div>
+   <div class="field"><label>Phone Number</label><input id="sPhone"></div>
+   <div class="field" style="grid-column:span 2"><label>Shop Address</label><input id="sAddress"></div>
+   <div><button class="btn" type="submit">Save Settings</button></div>
+  </form></div>
+  <div class="panel"><h3>Important Information</h3><p class="muted">This is an offline, single-computer HTML software. Data is saved in this browser on this computer. It does not automatically sync to another computer. Use the Backup option regularly. Avoid clearing browser data, as that may remove saved records.</p><button class="btn danger" id="resetData">Delete All Store Data</button></div>
+ </section>
+</main>
+</div>
+<script>
+const KEY='karyanaStoreDesktop_v1';
+const fresh=()=>({settings:{name:'Karyana Store',owner:'',phone:'',address:''},products:[],customers:[],sales:[],purchases:[],ledger:[],nextInvoice:1});
+let db=load(),editingProduct=null,cart=[];
+function load(){try{return {...fresh(),...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(e){return fresh()}}
+function save(){localStorage.setItem(KEY,JSON.stringify(db));render()}
+const money=n=>'Rs '+(Number(n)||0).toLocaleString('en-PK',{maximumFractionDigits:2});
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const today=()=>new Date().toISOString().slice(0,10);
+document.getElementById('today').textContent=new Date().toLocaleDateString('en-PK',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+document.getElementById('purchaseDate').value=today();
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===p));document.getElementById('pageTitle').textContent=p.charAt(0).toUpperCase()+p.slice(1).replace('sales','Sales & Billing');render()}
+function balance(id){return db.ledger.filter(x=>x.customerId===id).reduce((a,x)=>a+(x.debit||0)-(x.credit||0),0)}
+function render(){
+ document.getElementById('brandName').textContent=db.settings.name||'Karyana Store';
+ document.getElementById('dSales').textContent=money(db.sales.filter(x=>x.date===today()).reduce((a,x)=>a+x.total,0));
+ document.getElementById('dProducts').textContent=db.products.length;
+ document.getElementById('dStock').textContent=money(db.products.reduce((a,p)=>a+p.qty*p.buy,0));
+ document.getElementById('dDue').textContent=money(db.customers.reduce((a,c)=>a+balance(c.id),0));
+ document.getElementById('rSales').textContent=money(db.sales.reduce((a,x)=>a+x.total,0));
+ document.getElementById('rPurchases').textContent=money(db.purchases.reduce((a,x)=>a+x.total,0));
+ document.getElementById('rProfit').textContent=money(db.sales.reduce((a,x)=>a+x.profit,0));
+ document.getElementById('rDue').textContent=money(db.customers.reduce((a,c)=>a+balance(c.id),0));
+ const recent=[...db.sales].reverse().slice(0,6);document.getElementById('recentSales').innerHTML=recent.length?recent.map(s=>`<tr><td>${esc(s.invoice)}</td><td>${esc(s.customerName)}</td><td>${s.date}</td><td>${money(s.total)}</td></tr>`).join(''):'<tr><td colspan="4" class="empty">No sales yet</td></tr>';
+ const lows=db.products.filter(p=>p.qty<=5);document.getElementById('lowStock').innerHTML=lows.length?lows.map(p=>`<p>⚠ ${esc(p.name)} — <b>${p.qty} ${esc(p.unit)}</b></p>`).join(''):'<p>No low stock items.</p>';
+ renderProducts();renderSelects();renderSales();renderPurchases();renderCustomers();renderLedger();renderCart();
+}
+function renderProducts(){let q=(document.getElementById('productSearch')?.value||'').toLowerCase();let a=db.products.filter(p=>p.name.toLowerCase().includes(q));document.getElementById('productsTable').innerHTML=a.length?a.map(p=>`<tr><td><b>${esc(p.name)}</b></td><td>${esc(p.category)}</td><td>${esc(p.unit)}</td><td>${money(p.buy)}</td><td>${money(p.sell)}</td><td>${p.qty}</td><td>${money(p.qty*p.buy)}</td><td><div class="actions"><button class="btn small secondary" onclick="editProduct('${p.id}')">Edit</button><button class="btn small danger" onclick="deleteProduct('${p.id}')">Delete</button></div></td></tr>`).join(''):'<tr><td colspan="8" class="empty">No products found</td></tr>'}
+function renderSelects(){let opts=db.products.map(p=>`<option value="${p.id}">${esc(p.name)} (${p.qty} ${esc(p.unit)} available)</option>`).join('');['saleProduct','purchaseProduct'].forEach(id=>document.getElementById(id).innerHTML=opts||'<option value="">Add products first</option>');let cs=db.customers.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');document.getElementById('saleCustomer').innerHTML='<option value="">Walk-in Customer</option>'+cs;document.getElementById('ledgerCustomer').innerHTML='<option value="">Select customer</option>'+cs}
+document.getElementById('productForm').addEventListener('submit',e=>{e.preventDefault();let p={id:editingProduct||crypto.randomUUID(),name:pName.value.trim(),category:pCategory.value.trim(),unit:pUnit.value,buy:+pBuy.value,sell:+pSell.value,qty:+pQty.value};if(editingProduct){let old=db.products.find(x=>x.id===editingProduct);if(old)p.qty=p.qty;db.products=db.products.map(x=>x.id===editingProduct?p:x)}else db.products.push(p);editingProduct=null;e.target.reset();pBuy.value=0;pQty.value=0;productSubmit.textContent='Save Product';save()});
+function editProduct(id){let p=db.products.find(x=>x.id===id);if(!p)return;editingProduct=id;pName.value=p.name;pCategory.value=p.category;pUnit.value=p.unit;pBuy.value=p.buy;pSell.value=p.sell;pQty.value=p.qty;productSubmit.textContent='Update Product';showPage('products')}
+function deleteProduct(id){if(confirm('Delete this product?')){db.products=db.products.filter(x=>x.id!==id);save()}}
+document.getElementById('productCancel').addEventListener('click',()=>{editingProduct=null;productSubmit.textContent='Save Product'});
+document.getElementById('productSearch').addEventListener('input',renderProducts);
+document.getElementById('addSaleItem').addEventListener('click',()=>{let p=db.products.find(x=>x.id===saleProduct.value),q=+saleQty.value;if(!p||q<=0)return alert('Select a product and enter a valid quantity.');let existing=cart.find(x=>x.id===p.id);let already=existing?existing.qty:0;if(q+already>p.qty)return alert('Not enough stock available.');if(existing)existing.qty+=q;else cart.push({id:p.id,name:p.name,qty:q,rate:p.sell,buy:p.buy,unit:p.unit});renderCart()});
+function renderCart(){document.getElementById('cartTable').innerHTML=cart.length?cart.map((x,i)=>`<tr><td>${esc(x.name)}</td><td>${x.qty} ${esc(x.unit)}</td><td>${money(x.rate)}</td><td>${money(x.qty*x.rate)}</td><td class="no-print"><button class="btn small danger" onclick="removeCart(${i})">Remove</button></td></tr>`).join(''):'<tr><td colspan="5" class="empty">Bill is empty. Add products above.</td></tr>';let sub=cart.reduce((a,x)=>a+x.qty*x.rate,0),disc=+saleDiscount.value||0,total=Math.max(0,sub-disc),paid=+salePaid.value||0;cartSubtotal.textContent=money(sub);cartTotal.textContent=money(total);cartDue.textContent=money(Math.max(0,total-paid));invoiceNo.textContent=' #'+String(db.nextInvoice).padStart(5,'0');invoiceDate.textContent=new Date().toLocaleString()}
+function removeCart(i){cart.splice(i,1);renderCart()}
+saleDiscount.addEventListener('input',renderCart);salePaid.addEventListener('input',renderCart);clearCart.addEventListener('click',()=>{cart=[];saleDiscount.value=0;salePaid.value=0;renderCart()});
+completeSale.addEventListener('click',()=>{if(!cart.length)return alert('Please add at least one item.');let total=Math.max(0,cart.reduce((a,x)=>a+x.qty*x.rate,0)-(+saleDiscount.value||0)),paid=+salePaid.value||0;if(paid>total)return alert('Paid amount cannot exceed total.');let customer=db.customers.find(c=>c.id===saleCustomer.value),invoice='INV-'+String(db.nextInvoice++).padStart(5,'0');let sale={invoice,date:today(),customerId:customer?.id||'',customerName:customer?.name||'Walk-in Customer',items:cart.map(x=>({...x})),total,paid,due:total-paid,profit:cart.reduce((a,x)=>a+x.qty*(x.rate-x.buy),0)-(+saleDiscount.value||0)};cart.forEach(x=>{let p=db.products.find(p=>p.id===x.id);p.qty-=x.qty});db.sales.push(sale);if(customer){db.ledger.push({id:crypto.randomUUID(),date:today(),customerId:customer.id,type:'Sale',details:invoice,debit:sale.due,credit:0})}save();printInvoice(sale);cart=[];saleDiscount.value=0;salePaid.value=0;renderCart()});
+function printInvoice(s){let w=window.open('','_blank','width=850,height=700');if(!w)return alert('Please allow pop-ups to print invoice.');w.document.write(`<html><head><title>${s.invoice}</title><style>body{font:14px Arial;padding:35px;color:#111}h1{text-align:center}table{width:100%;border-collapse:collapse;margin-top:25px}td,th{padding:10px;border-bottom:1px solid #ddd;text-align:left}.r{text-align:right}.foot{text-align:right;margin-top:25px}</style></head><body><h1>${esc(db.settings.name)}</h1><p style="text-align:center">${esc(db.settings.address)} ${esc(db.settings.phone)}</p><hr><h2>Sales Invoice</h2><p>Invoice: ${s.invoice}<br>Date: ${s.date}<br>Customer: ${esc(s.customerName)}</p><table><tr><th>Product</th><th>Qty</th><th>Rate</th><th class="r">Amount</th></tr>${s.items.map(x=>`<tr><td>${esc(x.name)}</td><td>${x.qty} ${esc(x.unit)}</td><td>${money(x.rate)}</td><td class="r">${money(x.qty*x.rate)}</td></tr>`).join('')}</table><div class="foot"><p>Total: <b>${money(s.total)}</b></p><p>Paid: ${money(s.paid)}</p><p>Due: <b>${money(s.due)}</b></p></div><p style="margin-top:50px;text-align:center">Thank you for shopping!</p><script>window.onload=()=>window.print()<\/script></body></html>`);w.document.close()}
+function renderSales(){document.getElementById('salesTable').innerHTML=db.sales.length?[...db.sales].reverse().map(s=>`<tr><td>${esc(s.invoice)}</td><td>${esc(s.customerName)}</td><td>${s.date}</td><td>${money(s.total)}</td><td>${money(s.paid)}</td><td>${money(s.due)}</td></tr>`).join(''):'<tr><td colspan="6" class="empty">No saved sales</td></tr>'}
+document.getElementById('purchaseForm').addEventListener('submit',e=>{e.preventDefault();let p=db.products.find(x=>x.id===purchaseProduct.value),q=+purchaseQty.value,rate=+purchaseRate.value;if(!p||q<=0)return alert('Select product and valid quantity.');p.qty+=q;p.buy=rate;db.purchases.push({date:purchaseDate.value||today(),product:p.name,productId:p.id,qty:q,rate,total:q*rate,supplier:supplier.value});e.target.reset();purchaseDate.value=today();save()});
+function renderPurchases(){document.getElementById('purchasesTable').innerHTML=db.purchases.length?[...db.purchases].reverse().map(x=>`<tr><td>${x.date}</td><td>${esc(x.product)}</td><td>${x.qty}</td><td>${money(x.rate)}</td><td>${money(x.total)}</td><td>${esc(x.supplier)}</td></tr>`).join(''):'<tr><td colspan="6" class="empty">No purchases recorded</td></tr>'}
+document.getElementById('customerForm').addEventListener('submit',e=>{e.preventDefault();db.customers.push({id:crypto.randomUUID(),name:cName.value.trim(),phone:cPhone.value.trim(),address:cAddress.value.trim()});e.target.reset();save()});
+function renderCustomers(){document.getElementById('customersTable').innerHTML=db.customers.length?db.customers.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.phone)}</td><td>${esc(c.address)}</td><td>${money(balance(c.id))}</td><td><button class="btn small danger" onclick="deleteCustomer('${c.id}')">Delete</button></td></tr>`).join(''):'<tr><td colspan="5" class="empty">No customers added</td></tr>'}
+function deleteCustomer(id){if(db.sales.some(s=>s.customerId===id)||db.ledger.some(l=>l.customerId===id))return alert('This customer has transaction history and cannot be deleted.');if(confirm('Delete customer?')){db.customers=db.customers.filter(c=>c.id!==id);save()}}
+document.getElementById('paymentForm').addEventListener('submit',e=>{e.preventDefault();let c=db.customers.find(x=>x.id===ledgerCustomer.value),amt=+paymentAmount.value;if(!c||amt<=0)return alert('Select customer and enter payment.');db.ledger.push({id:crypto.randomUUID(),date:today(),customerId:c.id,type:'Payment',details:paymentNote.value||'Payment received',debit:0,credit:amt});e.target.reset();save()});
+function renderLedger(){document.getElementById('ledgerTable').innerHTML=db.ledger.length?[...db.ledger].reverse().map(x=>{let c=db.customers.find(c=>c.id===x.customerId);return `<tr><td>${x.date}</td><td>${esc(c?.name||'Unknown')}</td><td>${esc(x.type)}</td><td>${esc(x.details)}</td><td>${money(x.debit)}</td><td>${money(x.credit)}</td></tr>`}).join(''):'<tr><td colspan="6" class="empty">No ledger transactions</td></tr>'}
+document.getElementById('settingsForm').addEventListener('submit',e=>{e.preventDefault();db.settings={name:sName.value.trim()||'Karyana Store',owner:sOwner.value.trim(),phone:sPhone.value.trim(),address:sAddress.value.trim()};save();alert('Settings saved.')});
+function fillSettings(){sName.value=db.settings.name||'';sOwner.value=db.settings.owner||'';sPhone.value=db.settings.phone||'';sAddress.value=db.settings.address||''}
+document.getElementById('exportData').addEventListener('click',()=>{let blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='karyana-store-backup-'+today()+'.json';a.click();URL.revokeObjectURL(a.href)});
+document.getElementById('importFile').addEventListener('change',e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!x.products||!x.customers||!x.sales)throw Error();if(confirm('Restore backup? Current data will be replaced.')){db={...fresh(),...x};save();fillSettings();alert('Backup restored.')}}catch(err){alert('Invalid backup file.')}};r.readAsText(f);e.target.value=''});
+document.getElementById('resetData').addEventListener('click',()=>{if(confirm('This will permanently delete all store records in this browser. Download a backup first. Continue?')){db=fresh();cart=[];localStorage.removeItem(KEY);fillSettings();save()}});
+fillSettings();render();
+</script>
+</body></html>
